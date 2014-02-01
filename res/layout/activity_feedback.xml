@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/feedback_title"
+        android:layout_width="match_parent"
+   	 	android:layout_height="wrap_content"
+   	 	style="?android:attr/listSeparatorTextViewStyle"
+   	 	android:text="@string/feedback_title"
+   	 	/>
+    <EditText
+        android:id="@+id/feedback_message"
+        android:layout_width="match_parent"
+   	 	android:layout_height="0dp"
+   	 	android:layout_weight="50"   	
+   	 	android:layout_margin="10dp"
+   	 	android:hint="@string/feedback_hint" 	
+        />
+    <ImageButton
+        android:id="@+id/feedback_submit"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="#00000000"
+        android:paddingLeft="10dp"
+        android:text="@string/feedback_submit"
+        android:layout_margin="5dp"
+        android:scaleType="centerInside"
+        android:textColor="#FFFFFF"
+        android:src="@drawable/mail"
+        android:layout_marginBottom="15dp"
+        />    
+
+</LinearLayout>

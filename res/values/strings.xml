@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FindMyKid</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="init_name">Your Name</string>
+	<string name="init_name_hint">First Name , Last Name</string>
+	<string name="add_tracking_code_title">Your Unique Code</string>
+	<string name="menu_add_tracking">Add Connections</string>
+	<string name="add_tracking_connect">Connect with another user</string>
+	<string name="add_tracking_connect_hint">Write the other user\'s code here</string>
+	<string name="add_tracking_tracking_title">Tracking</string>
+	<string name="add_tracking_trackers_title">Trackers</string>
+	<string name="start_tracking_button">Start Tracking: %1$s</string>
+	<string name="currently_tracking_text">Tracking</string>
+	<string name="tracked_text">Tracked</string>
+	<string name="feedback_text">FeedBack</string>
+	<string name="time">Time</string>
+	<string name="last_location_detail_text">Detail</string>
+	<string name="latitude">Latitude</string>
+	<string name="longitude">Longitude</string>
+	<string name="altitude">Altitude</string>
+	<string name="last_known_location_text">Last Location</string>
+	<string name="location_unknown">Unknown</string>
+	<string name="address">Address</string>
+	<string name="progress_1">Checking Connection</string>
+	<string name="status_1">No Connection. Using Text</string>
+	<string name="status_2">Permission Not Granted</string>
+	<string name="progress_2">Checking Permission</string>
+	<string name="progress_3">Retrieving Location</string>
+	<string name="progress_4">Loading Map and Details</string>
+	<string name="progress_5">Finished</string>
+	<string name="click_button_text">Click</string>
+	<string name="feedback_title">Message</string>
+	<string name="feedback_hint">Please write me about your problems. Thank you so much. I will get back to you within a few days</string>
+	<string name="feedback_submit">Submit</string>
+	<string name="feedback_thankyou">Thank You So Much</string>
+	<string name="form_fill_message">Please fill the form</string>
+	<string name="sms_sent">Sms Sent</string>
+	<string name="sms_failure">Generic Failure</string>
+	<string name="sms_no_service">No Service</string>
+	<string name="sms_null_pdu">Null PDU</string>
+	<string name="sms_radio_off">Radio Off</string>
+	<string name="sms_delivered">Sms Delivered</string>
+	<string name="sms_not_delivered">Sms Not Delivered</string>
+</resources>

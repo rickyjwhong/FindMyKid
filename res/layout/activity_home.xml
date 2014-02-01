@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <FrameLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:id="@+id/map_frame"
+		    android:clickable="true"
+		     />
+	    <FrameLayout
+	    	android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:id="@+id/control_frame"
+		    android:clickable="true"
+		    />
+	    <ImageButton
+	        android:scaleType="centerInside"	
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:src="@drawable/original_radar"
+	        android:id="@+id/research_button"
+	        android:visibility="gone"
+	        android:layout_gravity="center|top"
+	        android:layout_marginTop="10dp"
+	        android:background="#00000000"
+	        />
+	        
+    </FrameLayout>
+</LinearLayout>

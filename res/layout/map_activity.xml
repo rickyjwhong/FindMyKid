@@ -1,0 +1,96 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    >            
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="65"
+        android:orientation="vertical" 
+        android:padding="5dp"
+        >      
+        <FrameLayout
+            android:id="@+id/mapFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />       	
+    </RelativeLayout>       
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="35"
+        android:orientation="vertical"
+        >               
+       <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        style="?android:attr/listSeparatorTextViewStyle"    
+	        android:text="@string/last_location_detail_text"        
+	        />
+        <TableLayout
+	        android:orientation="vertical"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        >
+	        <TableRow>
+	            <TextView
+	                style="@style/LastLocationDetailTitle"
+	          		android:text="@string/time" />
+	            <TextView
+	                android:id="@+id/ll_time"
+	                style="@style/LastLocationDetailText" />
+	        </TableRow>	        
+	        <TableRow>
+	            <TextView
+	                style="@style/LastLocationDetailTitle"
+	          		android:text="@string/latitude"  />
+	            <TextView
+	                android:id="@+id/ll_latitude"
+	                style="@style/LastLocationDetailText" />
+	        </TableRow>	     
+	        <TableRow>
+	            <TextView
+	                style="@style/LastLocationDetailTitle"
+	          		android:text="@string/longitude"  />
+	            <TextView
+	                android:id="@+id/ll_longitude"
+	                style="@style/LastLocationDetailText" />
+	        </TableRow>	 
+	        <TableRow>
+	            <TextView
+	                style="@style/LastLocationDetailTitle"
+	          		android:text="@string/altitude"  />
+	            <TextView
+	                android:id="@+id/ll_altitude"
+	                style="@style/LastLocationDetailText" />
+	        </TableRow>	        
+	        <TableRow>
+	            <TextView
+	                style="@style/LastLocationDetailTitle"
+	          		android:text="@string/last_known_location_text"   />
+	            <TextView
+	                android:id="@+id/ll_known_location"
+	                style="@style/LastLocationDetailText" />
+	        </TableRow>                  
+	    </TableLayout> 
+	    <FrameLayout
+		    android:id="@+id/mapDetailProgressContainer"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:clickable="true"
+		    >
+	    <ProgressBar
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        style="@android:style/Widget.ProgressBar.Large"
+	        />
+		</FrameLayout>       
+    </LinearLayout>
+    
+</LinearLayout>
