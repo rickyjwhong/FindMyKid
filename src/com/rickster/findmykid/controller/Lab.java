@@ -84,6 +84,7 @@ public class Lab {
 	}
 	
 	public ArrayList<User> loadTrackings(){	
+		Log.i(TAG, "Using: " + mOnline + " Lab");
 		if(mOnline) return sOnlineLab.loadTrackings();
 		else return sOfflineLab.loadTrackings();	
 	}
@@ -119,6 +120,7 @@ public class Lab {
 	}
 	
 	public void registerUser(final User user){
+		Log.i(TAG, "Registering user: " + user.getName() + " Using " + mOnline + " Lab");
 		if(mOnline) sOnlineLab.registerUser(user);
 		else sOfflineLab.registerUser(user);			
 	}

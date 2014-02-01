@@ -21,10 +21,12 @@ public class SMSReceiver extends BroadcastReceiver {
 			msgs = new SmsMessage[pdus.length];
 			for (int i=0; i<msgs.length; i++){
 				msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-				str += "SMS from " + msgs[i].getOriginatingAddress();
-				str += " : ";
+				str += "<return number=\"" + msgs[i].getOriginatingAddress() + "\" />";
 				str += msgs[i].getMessageBody().toString();
 			}
+			
+			
+			
 			
 			//check if the contained code has permission
 			//store it in location

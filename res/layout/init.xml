@@ -19,12 +19,6 @@
         android:gravity="center|center"
         android:hint="@string/init_name_hint"
         />
-    <ImageView
-        android:id="@+id/init_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        
-        />
     <ImageButton
         android:id="@+id/init_submit"
         android:layout_width="wrap_content"

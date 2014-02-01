@@ -15,6 +15,7 @@ import com.rickster.findmykid.model.Connection;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.HttpData;
 import com.rickster.findmykid.model.Location;
+import com.rickster.findmykid.model.OfflineData;
 import com.rickster.findmykid.model.User;
 
 public class OnlineLab {
@@ -38,6 +39,10 @@ public class OnlineLab {
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		return info != null && info.isAvailable() && info.isConnected();
 	}	
+	
+	public ArrayList<Connection> getConnections(){
+		return HttpData.getConnections(mCurrentUser.getId());
+	}
 	
 	public void showToast(String msg){
 		if(msg != null) Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
@@ -69,6 +74,10 @@ public class OnlineLab {
 	
 	public boolean hasPermission(User targetUser){
 		return HttpData.isConnected(mCurrentUser.getId(), targetUser.getId());
+	}
+	
+	public void updateWithLocalConnections(ArrayList<Connection> connections){
+		OfflineLab.get(mContext).updateLocalData(connections);
 	}
 	
 	public ArrayList<Connection> connectUser(String code){

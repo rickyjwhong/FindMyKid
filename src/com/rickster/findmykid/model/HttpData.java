@@ -64,6 +64,7 @@ public class HttpData {
 	public static final String METHOD_TRACKING 				= "get_tracking";
 	public static final String METHOD_ADD_CONNECTION 		= "add_connection";
 	public static final String METHOD_DELETE_CONNECTION 	= "delete_connection";
+	public static final String METHOD_GET_CONNECTIONS		= "get_connections";
 	public static final String METHOD_USER_EXISTS			= "user_exists";
 	public static final String METHOD_GET_LOCATION			= "get_location";
 	public static final String METHOD_IS_CONNECTED			= "is_connected";
@@ -207,6 +208,13 @@ public class HttpData {
 		vp.add(new BasicNameValuePair(PARAM_METHOD, METHOD_USER_EXISTS));
 		vp.add(new BasicNameValuePair(PARAM_CODE, userCode));
 		return new HttpParse<User>(XML_USER).download(postDataString(vp));
+	}
+	
+	public static ArrayList<Connection> getConnections(long currentUserId){
+		ArrayList<BasicNameValuePair> vp = new ArrayList<BasicNameValuePair>();
+		vp.add(new BasicNameValuePair(PARAM_METHOD, METHOD_GET_CONNECTIONS));
+		vp.add(new BasicNameValuePair(PARAM_USERID, String.valueOf(currentUserId)));
+		return new HttpParse<Connection>(XML_CONNECTION).download(postDataString(vp));
 	}
 	
 	public static boolean isConnected(long trackerId, long trackingId){

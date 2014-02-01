@@ -48,7 +48,7 @@ public class Init extends FragmentActivity {
 	Context mContext;
 	SharedPreferences mPrefs;	
 	String mPhoneNumber;
-	String mName;
+	String mName = "";
 	EditText mNameEdit;
 	ImageButton mSubmit;
 	
@@ -73,24 +73,18 @@ public class Init extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				mPhoneNumber = getPhoneNumber();
-				startGCMRegistration();
+				if(mName.length() != 0){
+					if(Lab.hasConnection(getApplicationContext())){					
+						mPhoneNumber = getPhoneNumber();
+						startGCMRegistration();										
+					}else{
+						Lab.get(getApplicationContext()).showToast(getString(R.string.connection_register));
+					}
+				}else{
+					Lab.get(getApplicationContext()).showToast(getString(R.string.form_fill_message));
+				}			
 			}
 		});
-		/*
-		mImage.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
-			}
-		});
-		*/
 				
 		mNameEdit = (EditText) findViewById(R.id.init_name);		
 		mNameEdit.addTextChangedListener(new TextWatcher() {
@@ -117,78 +111,12 @@ public class Init extends FragmentActivity {
 		});				
 	}
 	
-	/*
-	public void showImage(){
-		if(selectedImagePath != null){
-			//String s = mContext.getFileStreamPath(selectedImagePath).getAbsolutePath();
-			
-			//mImage.setImageBitmap(bm);
-		}			
-	}
-	*/
-	
 	public void onResume(){
 		super.onResume();
-		//showImage();
-	}
-		
-	//UPDATED
-	/*
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-            	Uri selectedImage = data.getData();
-                InputStream imageStream = null;
-				try {
-					imageStream = getContentResolver().openInputStream(selectedImage);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-                mImage.setImageBitmap(yourSelectedImage);
-                //DEBUG PURPOSE - you can delete this if you want
-                if(selectedImagePath!=null)
-                    System.out.println(selectedImagePath);
-                else System.out.println("selectedImagePath is null");
-                if(filemanagerstring!=null)
-                    System.out.println(filemanagerstring);
-                else System.out.println("filemanagerstring is null");
-
-                //NOW WE HAVE OUR WANTED STRING
-                if(selectedImagePath!=null)
-                    System.out.println("selectedImagePath is the right one for you!");
-                else
-                    System.out.println("filemanagerstring is the right one for you!");
-            }
-        }
-    }
-    
-    
-    public String getPath(Uri uri) {
-        String selectedImagePath;
-        //1:MEDIA GALLERY --- query from MediaStore.Images.Media.DATA
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if(cursor != null){
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            selectedImagePath = cursor.getString(column_index);
-        }else{
-            selectedImagePath = null;
-        }
-
-        if(selectedImagePath == null){
-            //2:OI FILE Manager --- call method: uri.getPath()
-            selectedImagePath = uri.getPath();
-        }
-        return selectedImagePath;
-    }
-	*/
+	}		
+	
 	public void switchSubmitButton(boolean on){
-		mSubmit.setEnabled(on);
-		mSubmit.setFocusable(on);
-		mSubmit.setClickable(on);
+
 	}
 	
 	//get primary phone number of the device	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.rickster.findmykid.R;
+import com.rickster.findmykid.controller.OnlineLab;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -107,7 +108,7 @@ public class OfflineData extends SQLiteOpenHelper {
 		query = 
 					" CREATE TABLE IF NOT EXISTS " + TABLE_LOCATION
 					+ " ( "
-					+ LOCATION_ID 	+ "INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ LOCATION_ID 	+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ LOCATION_LAT 	+ " REAL, "
 					+ LOCATION_LON	+ " REAL, "
 					+ LOCATION_ALT 	+ " REAL, "
@@ -122,14 +123,78 @@ public class OfflineData extends SQLiteOpenHelper {
 		Log.i(TAG, "Upgrade has been called from " + oldVersion + " to " + newVersion);
 	}
 	
-	public boolean updateData(){
-		
+	public boolean updateData(ArrayList<Connection> newConnections){
+		Log.i(TAG, "Updating Data: " + newConnections.size() + " connections to be updated");
 		//grab everything and see if it is inconsistnetn with server...
 		//SQLite will always triumph the priority elvel
 		//have a offline version number and have a online version number... which ever is greater, use it to update the other
 		
+		//getTrakcings
+		//getTrackers
+		ArrayList<Connection> oldConnections = getConnections();
+		
+		checkConnectionsForUpdate(oldConnections, newConnections);
+		
 		return true;
 	}
+	
+	public void checkConnectionsForUpdate(ArrayList<Connection> oldConnections, ArrayList<Connection> newConnections){
+		if(oldConnections.size() != newConnections.size()){
+			updateConnections(newConnections);
+			return;
+		}		
+		for(Connection x : oldConnections){
+			boolean m = false;
+			for(Connection y : newConnections)	
+				if(x.getId() == y.getId()) 
+					m = true;
+			if(!m){
+				updateConnections(newConnections);
+				return;
+			}
+			
+		}
+	}
+	
+	public void updateConnections(ArrayList<Connection> newConnections){
+		//delete all connections
+		deleteConnections();
+		addConnections(newConnections);		
+	}
+	
+	public void deleteConnections(){
+		getWritableDatabase().delete(TABLE_CONNECTION, null, null);
+	}
+	
+	public void addConnections(ArrayList<Connection> newConnections){
+		for(Connection connection : newConnections){
+			Log.i(TAG, "Adding connection to Local Server: " + connection.getId());
+			insertConnection(connection);
+		}
+	}
+	
+	public void insertConnection(Connection connection){
+		ContentValues cv = new ContentValues();
+		cv.put(CONNECTION_ID, connection.getId());
+		cv.put(CONNECTION_TRACKERID, String.valueOf(connection.getTracker()));
+		cv.put(CONNECTION_TRACKINGID, String.valueOf(connection.getTracking()));
+		cv.put(CONNECTION_UPDATED, String.valueOf(1));
+	}
+	
+	public ArrayList<Connection> getConnections(){
+		ArrayList<Connection> connections = new ArrayList<Connection>();
+		String query = "SELECT * FROM " + TABLE_CONNECTION;
+		Cursor wrapped = getReadableDatabase().rawQuery(query, null);
+		ConnectionCursor cursor = new ConnectionCursor(wrapped);
+		if(cursor.moveToFirst()){
+			do{
+				connections.add(cursor.getConnection());
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
+		Log.i(TAG, "Got " + connections.size() + " From the Local Server");
+		return connections;
+	}	
 	
 	public void respondLocation(Location loc){
 		//send sms back to the original phone number

@@ -43,4 +43,6 @@
 	<string name="sms_radio_off">Radio Off</string>
 	<string name="sms_delivered">Sms Delivered</string>
 	<string name="sms_not_delivered">Sms Not Delivered</string>
+	<string name="connection_register">You must have internet to register</string>
+	<string name="connection_internet">Need internet to modify Trackings</string>
 </resources>

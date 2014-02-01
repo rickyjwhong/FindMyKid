@@ -2,6 +2,8 @@ package com.rickster.findmykid.controller;
 
 import java.util.ArrayList;
 
+
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -11,6 +13,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.rickster.findmykid.R;
 import com.rickster.findmykid.model.Connection;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.HttpData;
@@ -55,19 +58,21 @@ public class OfflineLab  {
 	}	
 	
 	public boolean deleteTracking(User user){
-		return HttpData.deleteConnection(mCurrentUser.getId(), user.getId());
+		showToast(mContext.getString(R.string.connection_internet));
+		return false;
 	}
 	
 	public boolean deleteTracker(User user){
-		return HttpData.deleteConnection(user.getId(), mCurrentUser.getId());
+		showToast(mContext.getString(R.string.connection_internet));
+		return false;
 	}	
 	
 	public ArrayList<User> loadTrackers(){			
-		return HttpData.getTrackers(mCurrentUser);
+		return mOfflineData.getTrackers(getCurrentUser());
 	}
 	
 	public ArrayList<User> loadTrackings(){	
-		return HttpData.getTrackings(mCurrentUser);		
+		return mOfflineData.getTrackings(getCurrentUser());
 	}
 	
 	public boolean hasPermission(User targetUser){
@@ -76,7 +81,8 @@ public class OfflineLab  {
 	
 	public ArrayList<Connection> connectUser(String code){
 		Log.i(TAG, "Trying to connect: " + getCurrentUser().getCode() + " and " + code);
-		return HttpData.connectUser(getCurrentUser().getCode(), code);
+		showToast(mContext.getString(R.string.connection_internet));
+		return new ArrayList<Connection>();
 	}
 	
 	public User userExists(String code){
@@ -113,16 +119,8 @@ public class OfflineLab  {
 	
 	public void registerUser(final User user){
 		Log.i(TAG, "Registering User: " + user.getName() + " with RegId: " + user.getGCM());
-		new AsyncTask<User, Void, ArrayList<User>>() {	
-			@Override
-			protected ArrayList<User> doInBackground(User... params) {
-				return HttpData.registerUser(user);
-			}			
-			@Override
-			protected void onPostExecute(ArrayList<User> users){
-				if(users.size() != 0) saveUser(users.get(0));				
-			}			
-		}.execute();		
+		showToast(mContext.getResources().getString(R.string.connection_register));
+		//showToast(mContext.getResources().getString(R.string.))		
 	}
 	
 	public boolean alreadyConnected(User trackerUser){
@@ -140,6 +138,10 @@ public class OfflineLab  {
 		editor.putString(Constants.PREF_USER_PHONE_NUMBER, user.getPhoneNumber()).commit();
 		editor.putBoolean(Constants.FIRST_TIME, false).commit();
 		mCurrentUser = loadUser();
+	}
+	
+	public void updateLocalData(ArrayList<Connection> connections){
+		mOfflineData.updateData(connections);
 	}
 	
 	public User loadUser(){
