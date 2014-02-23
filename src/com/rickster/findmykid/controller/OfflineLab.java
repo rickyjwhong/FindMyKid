@@ -2,13 +2,10 @@ package com.rickster.findmykid.controller;
 
 import java.util.ArrayList;
 
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +16,7 @@ import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.HttpData;
 import com.rickster.findmykid.model.Location;
 import com.rickster.findmykid.model.OfflineData;
+import com.rickster.findmykid.model.Request;
 import com.rickster.findmykid.model.User;
 
 public class OfflineLab  {
@@ -46,7 +44,7 @@ public class OfflineLab  {
 	}	
 	
 	public void showToast(String msg){
-		if(msg != null) Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+		if(msg != null) Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
 	}
 	
 	public User getCurrentUser(){
@@ -75,8 +73,12 @@ public class OfflineLab  {
 		return mOfflineData.getTrackings(getCurrentUser());
 	}
 	
-	public boolean hasPermission(User targetUser){
-		return HttpData.isConnected(mCurrentUser.getId(), targetUser.getId());
+	public boolean hasPermissionToSend(User targetUser){
+		return mOfflineData.hasPermission(mCurrentUser, targetUser);
+	}
+	
+	public boolean hasPermissionToReceive(User trackerUser){
+		return mOfflineData.hasPermission(trackerUser, mCurrentUser);
 	}
 	
 	public ArrayList<Connection> connectUser(String code){
@@ -90,14 +92,27 @@ public class OfflineLab  {
 		return HttpData.checkUserExist(code).get(0);
 	}
 	
-	public void respondLocation(Location loc){
-		Log.i(TAG, "Returning Location for Request # " + loc.getRequestId());
-		HttpData.respondLocation(loc);		
+	
+	public User getUser(String code){
+		return mOfflineData.getUser(code);
 	}
 	
 	public void sendTrackingRequest(User targetUser){
 		Log.i(TAG, "Requesting Location for User: " + targetUser.getName());
-		HttpData.requestLocation(mCurrentUser, targetUser);		
+		if(targetUser.getPhoneNumber().equalsIgnoreCase("") || targetUser.getPhoneNumber() == null) 
+			showToast("The number is null"); //show dialog to get the number
+		else mOfflineData.requestLocation(mCurrentUser, targetUser);
+	}
+	
+	public void sendTrackingResponse(Request request){
+		User originalSender = mOfflineData.getUser(request.getSenderCode());
+		Log.i(TAG, "Retrieved Sender User: " + originalSender.getName());
+		if(mOfflineData.hasPermission(originalSender, mCurrentUser) && originalSender.getId() > 0){	
+			Log.i(TAG, "Permisson granted for SMS");
+			Location location = mOfflineData.getCurrentLocation(request.getId());
+			if(location != null) Log.i(TAG, "Got Location for SMS");
+			mOfflineData.respondLocation(mCurrentUser, originalSender, location);			
+		}
 	}
 	
 	public ArrayList<Location> getLocation(long id){
@@ -140,8 +155,14 @@ public class OfflineLab  {
 		mCurrentUser = loadUser();
 	}
 	
-	public void updateLocalData(ArrayList<Connection> connections){
-		mOfflineData.updateData(connections);
+	public void updateLocalConnections(ArrayList<Connection> connections){
+		Log.i(TAG, "Updating Local Server | Connections: " + connections.size());
+		mOfflineData.updateLocalConnections(connections);
+	}
+	
+	public void updateLocalUsers(ArrayList<User> users){
+		Log.i(TAG, "Updating Local Server | Users: " + users.size());
+		mOfflineData.updateLocalUsers(users);
 	}
 	
 	public User loadUser(){

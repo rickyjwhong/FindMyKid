@@ -1,9 +1,6 @@
 package com.rickster.findmykid.view;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.content.Context;
@@ -11,13 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -28,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -67,7 +58,6 @@ public class Init extends FragmentActivity {
 		mPrefs = mContext.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
 		mSubmit = (ImageButton) findViewById(R.id.init_submit);
 		//mImage = (ImageView) findViewById(R.id.init_image);
-		switchSubmitButton(false);
 		
 		mSubmit.setOnClickListener(new View.OnClickListener() {			
 			@Override
@@ -93,10 +83,8 @@ public class Init extends FragmentActivity {
 				// TODO Auto-generated method stub
 				String name = s.toString();
 				if(!name.isEmpty()) {
-					switchSubmitButton(true);
 					mName = name;
 				}
-				else switchSubmitButton(false);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
@@ -114,10 +102,6 @@ public class Init extends FragmentActivity {
 	public void onResume(){
 		super.onResume();
 	}		
-	
-	public void switchSubmitButton(boolean on){
-
-	}
 	
 	//get primary phone number of the device	
 	public String getPhoneNumber(){
@@ -163,13 +147,12 @@ public class Init extends FragmentActivity {
 				sendRegistrationToBackEnd();
 			}			
 		}.execute(null, null, null);
-	}
+	}	
 	
 	private void sendRegistrationToBackEnd(){
 		if(!mName.isEmpty() && !regId.isEmpty() && !mPhoneNumber.isEmpty()){
 			User user = new User(mName, regId, mPhoneNumber);
 			Lab.get(mContext).registerUser(user);			
-			this.finish();
 		}else{
 			DialogFragment fragment = new DialogFragment();			
 			FragmentManager fm = this.getSupportFragmentManager();

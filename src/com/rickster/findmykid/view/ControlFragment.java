@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 import com.rickster.findmykid.R;
 import com.rickster.findmykid.controller.Lab;
 import com.rickster.findmykid.controller.OfflineLab;
-import com.rickster.findmykid.controller.OnlineLab;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.User;
 
@@ -42,10 +42,12 @@ public class ControlFragment extends Fragment {
 	private Spinner mSpinner;
 	private ArrayAdapter<User> mAdapter;
 	private Callbacks mCallbacks;
+	private boolean mLocationReceived = false;
+	private boolean mTextLocationReceived = false;
 	private long mLocationId;
 	
 	public interface Callbacks{
-		void locationRetrieved(long id);
+		void locationRetrieved(long id, boolean text);
 	}
 	
 	@Override
@@ -63,9 +65,73 @@ public class ControlFragment extends Fragment {
 	private BroadcastReceiver mResultReceiver = new BroadcastReceiver(){
 		@Override
 		public void onReceive(Context c, Intent i) {
+			Log.i(TAG, "Location has been retrieved");
+			if(mTextLocationReceived) return;
+			mLocationReceived = true;
 			gotLocation(i.getLongExtra(Constants.LOCATION_ID_EXTRA, -1));			
 		}		
 	};
+	
+	private BroadcastReceiver mTextLocationReceiver = new BroadcastReceiver(){
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			mTextLocationReceived = true;
+			gotLocation(intent.getLongExtra(Constants.LOCATION_ID_EXTRA, -1));
+		}		
+	};
+	
+	private BroadcastReceiver mTextSwitchReceiver = new BroadcastReceiver(){
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {		
+			Log.i(TAG, "Received text switch command");
+			if(mLocationReceived) return;
+			FragmentManager fm = getActivity().getSupportFragmentManager();
+			AlertFragment fragment = AlertFragment.newInstance(mSelectedTracking.getName());
+			fragment.setTargetFragment(ControlFragment.this, Constants.ALERT_REQUEST);
+			fragment.show(fm, Constants.ALERT_FRAGMENT);			
+		}		
+	};
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data){
+		if(resultCode != Activity.RESULT_OK) return;
+		if(requestCode == Constants.ALERT_REQUEST){
+			boolean result = data.getBooleanExtra(Constants.ALERT_RESULT, false);
+			if(result){
+				mProgressStatus.setText(R.string.status_1);	
+				OfflineLab.get(getActivity()).sendTrackingRequest(mSelectedTracking);
+			}else{
+				clearUI();
+			}			
+		}
+	}
+	
+	public void clearUI(){
+		mSelectedTracking = new User();
+		mProgressStatus.setText(R.string.progress_0);
+		mStartTrackingButton.setEnabled(true);
+		mStartTrackingButton.setClickable(true);
+		mStartTrackingButton.setImageResource(R.drawable.progress_0);
+	}
+	
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		getActivity().registerReceiver(mResultReceiver, new IntentFilter(Constants.ACTION_LOCATION_RECEIVED));
+		getActivity().registerReceiver(mTextSwitchReceiver, new IntentFilter(Constants.LOCATION_RETRIEVAL_STARTED));
+		getActivity().registerReceiver(mTextLocationReceiver, new IntentFilter(Constants.TEXT_LOCATION_RECEIVED));
+		if(mAdapter != null) new GetTrackingTask().execute();
+	}
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		getActivity().unregisterReceiver(mResultReceiver);
+		getActivity().unregisterReceiver(mTextSwitchReceiver);
+		getActivity().unregisterReceiver(mTextLocationReceiver);
+	}
 	
 	private void giveSleep(long value){
 		try {
@@ -91,6 +157,7 @@ public class ControlFragment extends Fragment {
 		if(status){			
 			mStartTrackingButton.setImageResource(R.drawable.progress_2);
 			mProgressStatus.setText(R.string.progress_3);
+			giveSleep(1500);
 			startTracking();
 		}else{
 			mProgressStatus.setText(R.string.status_2);
@@ -114,7 +181,7 @@ public class ControlFragment extends Fragment {
 		mProgressStatus.setText(R.string.progress_5);	
 		new Handler().postDelayed(new Runnable(){
 		    public void run() {
-		    	mCallbacks.locationRetrieved(mLocationId);
+		    	mCallbacks.locationRetrieved(mLocationId, mTextLocationReceived);
 		    }
 		}, 1000);
 	}
@@ -123,19 +190,6 @@ public class ControlFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		sLab = Lab.get(getActivity());	
-	}	
-	
-	@Override
-	public void onResume(){
-		super.onResume();
-		getActivity().registerReceiver(mResultReceiver, new IntentFilter(Constants.ACTION_LOCATION_RECEIVED));
-		if(mAdapter != null) new GetTrackingTask().execute();
-	}
-	
-	@Override
-	public void onDestroy(){
-		super.onDestroy();
-		getActivity().unregisterReceiver(mResultReceiver);
 	}
 	
 	@Override
@@ -208,10 +262,27 @@ public class ControlFragment extends Fragment {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
+				mTextLocationReceived = false;
+				mLocationReceived = false;
 				sLab.sendTrackingRequest(mSelectedTracking);
 				return null;
 			}		
+			@Override
+			protected void onPostExecute(Void x){				
+				startLocationCountdown();				
+			}
 		}.execute();
+	}
+	
+	private void startLocationCountdown(){
+		new Handler().postDelayed(new Runnable(){
+		    public void run() {
+		    	if(!mLocationReceived){
+		    		Intent i = new Intent(Constants.LOCATION_RETRIEVAL_STARTED);
+					getActivity().sendBroadcast(i);
+		    	}		    	
+		    }
+		}, Constants.DATA_TEXT_SWITCH_DURATION);
 	}
 	
 	private void setUpAdapter(){

@@ -13,7 +13,8 @@ public class User {
 	private String mPhotoUrl;
 	
 	public User(){
-		mCode = mName = mGCM = mPhoneNumber = "";		
+		mCode = mName = mGCM = mPhoneNumber = "";	
+		mId = -1;
 	}
 	
 	public User(String n, String gcm, String pn){

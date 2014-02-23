@@ -41,7 +41,6 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -58,12 +57,17 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".controller.SMSReceiver">
-            <intent-filter>
+            android:name=".controller.SMSReceiver"
+            android:enabled="true"
+            >
+            <intent-filter
+                android:priority="10000"
+                >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
         <service  android:name=".controller.GCMService" />
+        <service  android:name=".controller.SMSService" />
         <activity android:name=".controller.GCMPushReceiver" />
         <activity android:name=".view.MapActivity" />
         <activity android:name=".view.HomeActivity" />

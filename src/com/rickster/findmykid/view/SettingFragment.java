@@ -41,6 +41,7 @@ public class SettingFragment extends Fragment {
 	private SharedPreferences mPrefs;
 	private Lab sLab;
 	private ImageButton mFeedBackButton;
+	private View mProgressBar;
 	
 	
 	@Override
@@ -48,6 +49,7 @@ public class SettingFragment extends Fragment {
 		super.onCreate(savedInstanceState);		
 		mPrefs = getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
 		sLab = Lab.get(getActivity());
+		
 		new getTrackingTask().execute(sLab.getCurrentUser());
 		new getTrackerTask().execute(sLab.getCurrentUser());
 	}
@@ -56,6 +58,9 @@ public class SettingFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		
 		View v = inflater.inflate(R.layout.setting, parent, false);		
+		
+		mProgressBar = v.findViewById(R.id.settingProgressContainer);
+		mProgressBar.setVisibility(View.INVISIBLE);
 		
 		mCode = (TextView) v.findViewById(R.id.add_tracking_code);
 		String code = sLab.getUniqueCode();
@@ -67,8 +72,14 @@ public class SettingFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(getActivity(), FeedBackActivity.class);
-				startActivity(i);
+				boolean mConnected = Lab.hasConnection(getActivity());
+				if(!mConnected){
+					showToast(getString(R.string.connection_internet));
+					return;
+				}else{
+					Intent i = new Intent(getActivity(), FeedBackActivity.class);
+					startActivity(i);
+				}				
 			}
 		});
 		
@@ -76,19 +87,14 @@ public class SettingFragment extends Fragment {
 		mConnectEditText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
 				mConnectText = s.toString();
 			}
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub				
+			public void beforeTextChanged(CharSequence s, int start, int count,int after) {				
 			}
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// TODO Auto-generated method stub				
-			}			
+			public void onTextChanged(CharSequence s, int start, int before, int count) {				
+			}					
 		});
 		
 		mConnectButton = (ImageButton) v.findViewById(R.id.add_tracking_connect_button);
@@ -101,15 +107,18 @@ public class SettingFragment extends Fragment {
 	}
 	
 	private void showToast(String msg){
-		Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
 	}
 	
 	private class ConnectButtonListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			if(mConnectText != null && mConnectText.length() != 0){
+			boolean mConnected = Lab.hasConnection(getActivity());
+			if(mConnected && mConnectText != null && mConnectText.length() != 0){
 				new checkUserExistsTask().execute();				
+			}else if(!mConnected){
+				showToast(getString(R.string.connection_internet));
 			}else{
 				showToast("Fill out the form");
 			}
@@ -142,6 +151,10 @@ public class SettingFragment extends Fragment {
 	
 	private class connectTask extends AsyncTask<Void, Void, ArrayList<Connection>>{
 		@Override
+		protected void onPreExecute(){
+			if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+		}
+		@Override
 		protected ArrayList<Connection> doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			return sLab.connectUser(mConnectText);
@@ -150,47 +163,53 @@ public class SettingFragment extends Fragment {
 		protected void onPostExecute(ArrayList<Connection> connections){
 			if(connections.size() > 0){
 				mConnectEditText.setText("");
-				showToast("Connection Successful!");	
+				showToast(getString(R.string.connection_successful));	
 				new getTrackerTask().execute(sLab.getCurrentUser());
 			}
+			if(mProgressBar != null) mProgressBar.setVisibility(View.INVISIBLE);
 		}
 	}
 	
-	private class getTrackingTask extends AsyncTask<User, Void, ArrayList<User>>{	
+	private class getTrackingTask extends AsyncTask<User, Void, ArrayList<User>>{
+		@Override
+		protected void onPreExecute(){
+			if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+		}
 		@Override
 		protected ArrayList<User> doInBackground(User... params) {
-			// TODO Auto-generated method stub
 			return sLab.loadTrackings();
 		}		
 		@Override
 		protected void onPostExecute(ArrayList<User> users){
-			mTracking.setAdapter(new TrackAdapter(getActivity(), users, true));
-			
+			mTracking.setAdapter(new TrackAdapter(getActivity(), users, true));		
+			if(mProgressBar != null) mProgressBar.setVisibility(View.INVISIBLE);
 		}
 	}
 	
-	private class getTrackerTask extends AsyncTask<User, Void, ArrayList<User>>{
+	private class getTrackerTask extends AsyncTask<User, Void, ArrayList<User>>{	
 		@Override
 		protected void onPreExecute(){
-			
-		}	
+			if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+		}
 		@Override
 		protected ArrayList<User> doInBackground(User... params) {
-			// TODO Auto-generated method stub
 			return sLab.loadTrackers();
 		}
 		@Override
 		protected void onPostExecute(ArrayList<User> users){
 			mTrackers.setAdapter(new TrackAdapter(getActivity(), users, false));
+			if(mProgressBar != null) mProgressBar.setVisibility(View.INVISIBLE);
 		}
 	}
 	
 	private class deleteTrackerTask extends AsyncTask<User, Void, Void>{
 		@Override
+		protected void onPreExecute(){
+			if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+		}
+		@Override
 		protected Void doInBackground(User... params) {
-			// TODO Auto-generated method stub
-			User user = params[0];
-			sLab.deleteTracker(user);			
+			sLab.deleteTracker(params[0]);			
 			return null;
 		}		
 		@Override
@@ -201,15 +220,18 @@ public class SettingFragment extends Fragment {
 	
 	private class deleteTrackingTask extends AsyncTask<User, Void, Void>{	
 		@Override
+		protected void onPreExecute(){
+			if(mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
+		}
+		@Override
 		protected Void doInBackground(User... params) {
-			// TODO Auto-generated method stub
 			User user = params[0];
 			sLab.deleteTracking(user);				
 			return null;
 		}			
 		@Override
 		protected void onPostExecute(Void x){
-			new getTrackingTask().execute(sLab.getCurrentUser());		
+			new getTrackingTask().execute(sLab.getCurrentUser());	
 		}
 	}
 	
@@ -249,15 +271,18 @@ public class SettingFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					boolean mConnected = Lab.hasConnection(getActivity());
+					if(!mConnected){
+						showToast(getString(R.string.connection_internet));
+						return;
+					}
 					if(isTracking){
 						Log.i(TAG, "Delete tracking: " + user.getName());
 						new deleteTrackingTask().execute(user);
 					}else{
 						Log.i(TAG, "Delete tracker: " + user.getName());
 						new deleteTrackerTask().execute(user);
-					}
-					
-					
+					}					
 				}
 			});
 			v.setTag(holder);			
@@ -268,7 +293,6 @@ public class SettingFragment extends Fragment {
 			TextView mName;
 			ImageButton mButton;
 		}		
-		//user get view but with viewholder		
 	}	
 	
 	

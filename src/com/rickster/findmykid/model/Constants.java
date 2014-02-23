@@ -28,7 +28,36 @@ public class Constants {
 	public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	public static final String DEFAULT_PHONE_NUMBER = "0000000000";
 	public static final String LOCATION_ID_EXTRA = "com.rickster.findmykid.location_id_extra";
+	public static final String LOCATION_TEXT_EXTRA	= "com.rickster.findmykid.location_text_extra";
 	public static final String ACTION_LOCATION_RECEIVED = "com.rickster.findmykid.location_received";
 	public static final String URL_STACKTRACE = "http://www.acebuff.com/server.php";
-	
+	public static final String LOCATION_RETRIEVAL_STARTED = "com.rickster.findmykid.location_retrieval_started";
+	public static final int DATA_TEXT_SWITCH_DURATION = 10000;
+	public static final String TEXT_LOCATION_RECEIVED = "com.rickster.findmykid.text_location_received";
+	public static final String TEXT_SMS_DELIVERED	 = "com.rickster.findmykid.text_sms_delivered";
+	public static final String TEXT_SMS_SENT		= "com.rickster.findmykid.text_sms_sent";
+	public static final String TEXT_CODE = "082105099107121";
+	public static final String TEXT_BEGINNING_CODE	= "<info key=\"" + TEXT_CODE;
+	public static final String TEXT_SERVICE_MESSAGE	= "com.rickster.findmykid.text_service_message";
+	public static final String REQUEST_TEXT 	= "request";
+	public static final String RESPONSE_TEXT 	= "response";
+	public static final String LOCATION_TEXT	= "location";
+	public static final String RETURN_TEXT		= "return";
+	public static final String RETURN_NUMBER	= "num";
+	public static final String DATA_TEXT	= "data";	
+	public static final String DATA_ID		= "id";
+	public static final String DATA_SENDER_CODE	= "sc";
+	public static final String DATA_LAT		= "lat";
+	public static final String DATA_LON		= "lon";
+	public static final String DATA_ALT		= "alt";
+	public static final String DATA_TIME	= "time";
+	public static final String DATA_REQUEST_ID	= "ri";
+	public static final String INFO_TEXT	= "info";
+	public static final String INFO_KEY 	= "key";
+	public static final String INFO_TYPE	= "type";
+	public static final int TIME_DIFFERENCE_LOCATION = 5 * 60 * 1000;
+	public static final String NAME_EXTRA = "com.rickster.findmykid.name_extra";
+	public static final String ALERT_FRAGMENT = "com.rickster.findmykid.alert_fragment";
+	public static final String ALERT_RESULT = "com.rickster.findmykid.alert_result";
+	public static final int ALERT_REQUEST = 1;
 }

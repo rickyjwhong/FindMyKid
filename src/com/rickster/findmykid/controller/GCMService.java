@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -17,16 +16,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
+import android.text.format.Time;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
-import com.google.android.gms.location.LocationListener;
 import com.rickster.findmykid.R;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.Location;
-import com.rickster.findmykid.view.MapActivity;
 
 public class GCMService extends GCMBaseIntentService {
 	
@@ -34,34 +30,46 @@ public class GCMService extends GCMBaseIntentService {
 	
 	private static final String TYPE_LOCATION_REQUEST = "location_request";
 	private static final String TYPE_LOCATION_RESPONSE = "location_response";
+	private long mRequestId;
 	public Handler mHandler = new Handler(Looper.getMainLooper());
 	
 	private Handler mLocationRequestHandler = new Handler(new Handler.Callback() {
 		
 		@Override
 		public boolean handleMessage(Message msg) {
+			mRequestId = Long.valueOf((String) msg.obj);
 			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
 			android.location.Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			Location location = new Location();
-			location.setLatitude(loc.getLatitude());
-			location.setLongitude(loc.getLongitude());
-			location.setAltitude(loc.getAltitude());
-			location.setTime(loc.getTime());
-			location.setRequestId(Long.valueOf((String) msg.obj));
-			
-			location.setAddress(getNearByLocation(loc));
-			//Toast.makeText(GCMService.this, (String) msg.obj, Toast.LENGTH_LONG).show();
-			new LocationResponseTask().execute(location);
+			if((System.currentTimeMillis() - loc.getTime()) > Constants.TIME_DIFFERENCE_LOCATION){
+				//use request location updates				
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+			}else{
+				//use stale last known location
+				Log.i(TAG, "Using stale Location, last known location");
+				sendLocationBack(loc);
+			}			
 			return true;
 		}
 	});
 	
+	private void sendLocationBack(android.location.Location loc){
+		Location location = new Location();
+		location.setLatitude(loc.getLatitude());
+		location.setLongitude(loc.getLongitude());
+		location.setAltitude(loc.getAltitude());
+		location.setTime(loc.getTime());
+		location.setRequestId(mRequestId);			
+		location.setAddress(getNearByLocation(loc));
+		new LocationResponseTask().execute(location);
+	}
+	
+	
 	private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 		@Override
-		public void onLocationChanged(android.location.Location arg0) {
+		public void onLocationChanged(android.location.Location loc) {
 			// TODO Auto-generated method stub
-			
+			Log.i(TAG, "Location Retrieval Triggered");
+			sendLocationBack(loc);
 		}
 
 		@Override
@@ -116,15 +124,6 @@ public class GCMService extends GCMBaseIntentService {
 		
 		@Override
 		public boolean handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			//Toast.makeText(getApplicationContext(),(String) msg.obj, Toast.LENGTH_LONG).show();	
-			/*
-			Intent i = new Intent(GCMService.this, MapActivity.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			i.putExtra(Constants.LOCATION_ID_EXTRA, Long.valueOf((String) msg.obj));
-			startActivity(i);
-			*/
-			//new LocationFetchTask().execute((String) msg.obj);
 			Intent i = new Intent(Constants.ACTION_LOCATION_RECEIVED);
 			i.putExtra(Constants.LOCATION_ID_EXTRA, Long.valueOf((String) msg.obj));
 			sendBroadcast(i);
@@ -166,7 +165,7 @@ public class GCMService extends GCMBaseIntentService {
 			Log.i(TAG, "Location Response Obtained");
 			Message msg = mLocationResponseHandler.obtainMessage(1, -1, -1, intent.getStringExtra(TYPE_LOCATION_RESPONSE));
 			mLocationResponseHandler.sendMessage(msg);
-		}		
+		}	
 	}
 
 	@Override

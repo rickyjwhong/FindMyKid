@@ -3,6 +3,7 @@ package com.rickster.findmykid.controller;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,8 +16,9 @@ import com.rickster.findmykid.model.Connection;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.HttpData;
 import com.rickster.findmykid.model.Location;
-import com.rickster.findmykid.model.OfflineData;
 import com.rickster.findmykid.model.User;
+import com.rickster.findmykid.view.Init;
+import com.rickster.findmykid.view.MainActivity;
 
 public class OnlineLab {
 	
@@ -26,23 +28,19 @@ public class OnlineLab {
 	private SharedPreferences mPrefs;
 	private ArrayList<User> mTrackings;
 	private ArrayList<User> mTrackers;
-	private User mCurrentUser;
+	private User mCurrentUser;		
 	
 	public OnlineLab(Context c){
 		mContext = c;
 		mPrefs = c.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
-		mCurrentUser = loadUser();
-	}
+		mCurrentUser = loadUser();	
+	}	
 	
 	public boolean hasConnection(){
 		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		return info != null && info.isAvailable() && info.isConnected();
-	}	
-	
-	public ArrayList<Connection> getConnections(){
-		return HttpData.getConnections(mCurrentUser.getId());
-	}
+	}		
 	
 	public void showToast(String msg){
 		if(msg != null) Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
@@ -57,14 +55,18 @@ public class OnlineLab {
 	}	
 	
 	public boolean deleteTracking(User user){
-		return HttpData.deleteConnection(mCurrentUser.getId(), user.getId());
+		boolean result = HttpData.deleteConnection(mCurrentUser.getId(), user.getId());
+		updateLocalServer();
+		return result;
 	}
 	
-	public boolean deleteTracker(User user){
-		return HttpData.deleteConnection(user.getId(), mCurrentUser.getId());
+	public boolean deleteTracker(User user){		
+		boolean result = HttpData.deleteConnection(user.getId(), mCurrentUser.getId());
+		updateLocalServer();
+		return result;
 	}	
 	
-	public ArrayList<User> loadTrackers(){			
+	public ArrayList<User> loadTrackers(){		
 		return HttpData.getTrackers(mCurrentUser);
 	}
 	
@@ -76,13 +78,58 @@ public class OnlineLab {
 		return HttpData.isConnected(mCurrentUser.getId(), targetUser.getId());
 	}
 	
-	public void updateWithLocalConnections(ArrayList<Connection> connections){
-		OfflineLab.get(mContext).updateLocalData(connections);
+	public ArrayList<Connection> getConnections(){
+		Log.i(TAG, "Retrieving All Connections");
+		return HttpData.getConnections(mCurrentUser.getId());
+	}
+	
+	public void updateLocalServer(){
+		new ConnectionUpdate().execute();
+		new UserUpdate().execute();
+	}
+	
+	public void updateLocalConnections(ArrayList<Connection> connections){
+		Log.i(TAG, "Updating Local Server with " + connections.size() + " connections");
+		OfflineLab.get(mContext).updateLocalConnections(connections);
+	}
+	
+	public void updateLocalUsers(ArrayList<User> users){
+		Log.i(TAG, "Updating Local Server with " + users.size() + " users");
+		OfflineLab.get(mContext).updateLocalUsers(users);
+	}
+	
+	private class ConnectionUpdate extends AsyncTask<Void, Void, ArrayList<Connection>>{
+		@Override
+		protected ArrayList<Connection> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			return HttpData.getConnections(mCurrentUser.getId());
+		}
+		@Override
+		protected void onPostExecute(ArrayList<Connection> connections){
+			if(connections != null) updateLocalConnections(connections);
+		}		
+	}
+	
+	private class UserUpdate extends AsyncTask<Void, Void, ArrayList<User>>{
+		@Override
+		protected ArrayList<User> doInBackground(Void... params) {
+			// TODO Auto-generated method stub		
+			ArrayList<User> trackers = HttpData.getTrackers(mCurrentUser);
+			ArrayList<User> trackings = HttpData.getTrackings(mCurrentUser);
+			trackers.addAll(trackings);
+			return trackers;
+		}		
+		@Override
+		protected void onPostExecute(ArrayList<User> users){
+			if(users != null) updateLocalUsers(users);			
+		}
 	}
 	
 	public ArrayList<Connection> connectUser(String code){
 		Log.i(TAG, "Trying to connect: " + getCurrentUser().getCode() + " and " + code);
-		return HttpData.connectUser(getCurrentUser().getCode(), code);
+		ArrayList<Connection> connections = HttpData.connectUser(getCurrentUser().getCode(), code);
+		updateLocalServer();
+		return connections;
 	}
 	
 	public User userExists(String code){
@@ -134,7 +181,10 @@ public class OnlineLab {
 			}			
 			@Override
 			protected void onPostExecute(ArrayList<User> users){
-				if(users.size() != 0) saveUser(users.get(0));				
+				if(users.size() != 0) saveUser(users.get(0));
+				Intent i = new Intent(mContext.getApplicationContext(), MainActivity.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				mContext.startActivity(i);
 			}			
 		}.execute();		
 	}

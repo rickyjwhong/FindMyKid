@@ -403,19 +403,20 @@ containing a value of this type.
         public static final int mapDetailProgressContainer=0x7f05001d;
         public static final int mapFragmentContainer=0x7f050017;
         public static final int map_frame=0x7f050009;
-        public static final int menu_add_tracking=0x7f050026;
+        public static final int menu_add_tracking=0x7f050027;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int progressContainer=0x7f050014;
         public static final int progressMessage=0x7f050013;
         public static final int research_button=0x7f05000b;
         public static final int satellite=0x7f050002;
+        public static final int settingProgressContainer=0x7f050024;
         public static final int startTrackingButton=0x7f050012;
         public static final int table_row=0x7f05000e;
         public static final int terrain=0x7f050003;
         public static final int testButton=0x7f05000d;
-        public static final int track_row_button=0x7f050025;
-        public static final int track_row_name=0x7f050024;
+        public static final int track_row_button=0x7f050026;
+        public static final int track_row_name=0x7f050025;
         public static final int trackingSpinner=0x7f050011;
         public static final int viewPager=0x7f050005;
     }
@@ -448,6 +449,7 @@ containing a value of this type.
         public static final int add_tracking_trackers_title=0x7f060024;
         public static final int add_tracking_tracking_title=0x7f060023;
         public static final int address=0x7f060030;
+        public static final int alternative_text_method=0x7f06004a;
         public static final int altitude=0x7f06002d;
         public static final int app_name=0x7f06001a;
         /**   Title for notification shown when GooglePlayServices needs to be
@@ -473,7 +475,7 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f060014;
-        public static final int click_button_text=0x7f060038;
+        public static final int click_button_text=0x7f060039;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -545,15 +547,16 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060013;
-        public static final int connection_internet=0x7f060046;
-        public static final int connection_register=0x7f060045;
+        public static final int connection_internet=0x7f060047;
+        public static final int connection_register=0x7f060046;
+        public static final int connection_successful=0x7f060048;
         public static final int currently_tracking_text=0x7f060026;
-        public static final int feedback_hint=0x7f06003a;
-        public static final int feedback_submit=0x7f06003b;
+        public static final int feedback_hint=0x7f06003b;
+        public static final int feedback_submit=0x7f06003c;
         public static final int feedback_text=0x7f060028;
-        public static final int feedback_thankyou=0x7f06003c;
-        public static final int feedback_title=0x7f060039;
-        public static final int form_fill_message=0x7f06003d;
+        public static final int feedback_thankyou=0x7f06003d;
+        public static final int feedback_title=0x7f06003a;
+        public static final int form_fill_message=0x7f06003e;
         public static final int hello_world=0x7f06001c;
         public static final int init_name=0x7f06001d;
         public static final int init_name_hint=0x7f06001e;
@@ -563,21 +566,23 @@ containing a value of this type.
         public static final int location_unknown=0x7f06002f;
         public static final int longitude=0x7f06002c;
         public static final int menu_add_tracking=0x7f060020;
+        public static final int progress_0=0x7f060032;
         public static final int progress_1=0x7f060031;
-        public static final int progress_2=0x7f060034;
-        public static final int progress_3=0x7f060035;
-        public static final int progress_4=0x7f060036;
-        public static final int progress_5=0x7f060037;
-        public static final int sms_delivered=0x7f060043;
-        public static final int sms_failure=0x7f06003f;
-        public static final int sms_no_service=0x7f060040;
-        public static final int sms_not_delivered=0x7f060044;
-        public static final int sms_null_pdu=0x7f060041;
-        public static final int sms_radio_off=0x7f060042;
-        public static final int sms_sent=0x7f06003e;
+        public static final int progress_2=0x7f060035;
+        public static final int progress_3=0x7f060036;
+        public static final int progress_4=0x7f060037;
+        public static final int progress_5=0x7f060038;
+        public static final int sms_delivered=0x7f060044;
+        public static final int sms_failure=0x7f060040;
+        public static final int sms_no_service=0x7f060041;
+        public static final int sms_not_delivered=0x7f060045;
+        public static final int sms_null_pdu=0x7f060042;
+        public static final int sms_radio_off=0x7f060043;
+        public static final int sms_sent=0x7f06003f;
         public static final int start_tracking_button=0x7f060025;
-        public static final int status_1=0x7f060032;
-        public static final int status_2=0x7f060033;
+        public static final int status_1=0x7f060033;
+        public static final int status_2=0x7f060034;
+        public static final int text_switch_question=0x7f060049;
         public static final int time=0x7f060029;
         public static final int tracked_text=0x7f060027;
     }
@@ -642,7 +647,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:adSize
+          @attr name com.rickster.findmykid:adSize
         */
         public static final int AdsAttrs_adSize = 0;
         /**
@@ -658,7 +663,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:adUnitId
+          @attr name com.rickster.findmykid:adUnitId
         */
         public static final int AdsAttrs_adUnitId = 1;
         /** Attributes that can be used with a MapAttrs.
@@ -714,7 +719,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraBearing
+          @attr name com.rickster.findmykid:cameraBearing
         */
         public static final int MapAttrs_cameraBearing = 1;
         /**
@@ -728,7 +733,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTargetLat
+          @attr name com.rickster.findmykid:cameraTargetLat
         */
         public static final int MapAttrs_cameraTargetLat = 2;
         /**
@@ -742,7 +747,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTargetLng
+          @attr name com.rickster.findmykid:cameraTargetLng
         */
         public static final int MapAttrs_cameraTargetLng = 3;
         /**
@@ -756,7 +761,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraTilt
+          @attr name com.rickster.findmykid:cameraTilt
         */
         public static final int MapAttrs_cameraTilt = 4;
         /**
@@ -770,7 +775,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:cameraZoom
+          @attr name com.rickster.findmykid:cameraZoom
         */
         public static final int MapAttrs_cameraZoom = 5;
         /**
@@ -790,7 +795,7 @@ containing a value of this type.
 <tr><td><code>terrain</code></td><td>3</td><td></td></tr>
 <tr><td><code>hybrid</code></td><td>4</td><td></td></tr>
 </table>
-          @attr name android:mapType
+          @attr name com.rickster.findmykid:mapType
         */
         public static final int MapAttrs_mapType = 0;
         /**
@@ -804,7 +809,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiCompass
+          @attr name com.rickster.findmykid:uiCompass
         */
         public static final int MapAttrs_uiCompass = 6;
         /**
@@ -818,7 +823,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiRotateGestures
+          @attr name com.rickster.findmykid:uiRotateGestures
         */
         public static final int MapAttrs_uiRotateGestures = 7;
         /**
@@ -832,7 +837,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiScrollGestures
+          @attr name com.rickster.findmykid:uiScrollGestures
         */
         public static final int MapAttrs_uiScrollGestures = 8;
         /**
@@ -846,7 +851,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiTiltGestures
+          @attr name com.rickster.findmykid:uiTiltGestures
         */
         public static final int MapAttrs_uiTiltGestures = 9;
         /**
@@ -860,7 +865,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiZoomControls
+          @attr name com.rickster.findmykid:uiZoomControls
         */
         public static final int MapAttrs_uiZoomControls = 10;
         /**
@@ -874,7 +879,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:uiZoomGestures
+          @attr name com.rickster.findmykid:uiZoomGestures
         */
         public static final int MapAttrs_uiZoomGestures = 11;
         /**
@@ -888,7 +893,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:useViewLifecycle
+          @attr name com.rickster.findmykid:useViewLifecycle
         */
         public static final int MapAttrs_useViewLifecycle = 12;
         /**
@@ -902,7 +907,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:zOrderOnTop
+          @attr name com.rickster.findmykid:zOrderOnTop
         */
         public static final int MapAttrs_zOrderOnTop = 13;
     };

@@ -69,6 +69,7 @@ public class HttpData {
 	public static final String METHOD_GET_LOCATION			= "get_location";
 	public static final String METHOD_IS_CONNECTED			= "is_connected";
 	public static final String METHOD_FEEDBACK				= "feedback";
+	public static final String METHOD_SWITCH				= "switch";
 	
 	public static final String XML_USER 					= "user";
 	public static final String XML_ID 						= "id";
@@ -214,7 +215,9 @@ public class HttpData {
 		ArrayList<BasicNameValuePair> vp = new ArrayList<BasicNameValuePair>();
 		vp.add(new BasicNameValuePair(PARAM_METHOD, METHOD_GET_CONNECTIONS));
 		vp.add(new BasicNameValuePair(PARAM_USERID, String.valueOf(currentUserId)));
-		return new HttpParse<Connection>(XML_CONNECTION).download(postDataString(vp));
+		String s = postDataString(vp);
+		Log.i(TAG, "GetConnections | Retrieved Result: " + s);
+		return new HttpParse<Connection>(XML_CONNECTION).download(s);
 	}
 	
 	public static boolean isConnected(long trackerId, long trackingId){

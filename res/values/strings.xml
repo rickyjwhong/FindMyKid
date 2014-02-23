@@ -24,6 +24,7 @@
 	<string name="location_unknown">Unknown</string>
 	<string name="address">Address</string>
 	<string name="progress_1">Checking Connection</string>
+	<string name="progress_0">Pick a Person</string>
 	<string name="status_1">No Connection. Using Text</string>
 	<string name="status_2">Permission Not Granted</string>
 	<string name="progress_2">Checking Permission</string>
@@ -44,5 +45,8 @@
 	<string name="sms_delivered">Sms Delivered</string>
 	<string name="sms_not_delivered">Sms Not Delivered</string>
 	<string name="connection_register">You must have internet to register</string>
-	<string name="connection_internet">Need internet to modify Trackings</string>
+	<string name="connection_internet">Need internet to do that</string>
+	<string name="connection_successful">Connection Successful!</string>
+	<string name="text_switch_question">Seems like %s is currently unreachable by internet. Send text to retrieve location?</string>
+	<string name="alternative_text_method">Alternative Method</string>
 </resources>

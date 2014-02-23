@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.rickster.findmykid.controller.Lab;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.Location;
+import com.rickster.findmykid.model.OfflineData;
 
 public class MapFragment extends SupportMapFragment {
 	
@@ -39,9 +40,13 @@ public class MapFragment extends SupportMapFragment {
 		Bundle args = getArguments();
 		if(args != null){
 			long locationId = args.getLong(Constants.LOCATION_ID_EXTRA, -1);
-			if(locationId != -1){	
-				//get location
+			boolean text = args.getBoolean(Constants.LOCATION_TEXT_EXTRA, false);
+			if(locationId != -1 && !text){	
 				new LocationFetchTask().execute(locationId);	
+			}else{
+				OfflineData o = new OfflineData(getActivity());
+				mLocation = o.getLocation(locationId);
+				if(isNetworkAvailable()) updateUI();
 			}
 		}		
 	}
@@ -119,9 +124,10 @@ public class MapFragment extends SupportMapFragment {
 		return info != null && info.isAvailable() && info.isConnected();
 	}
 	
-	public static MapFragment newInstance(long locationId){
+	public static MapFragment newInstance(long locationId, boolean text){
 		Bundle args = new Bundle();
 		args.putLong(Constants.LOCATION_ID_EXTRA, locationId);
+		args.putBoolean(Constants.LOCATION_TEXT_EXTRA, text);
 		MapFragment fragment = new MapFragment();
 		fragment.setArguments(args);
 		return fragment;

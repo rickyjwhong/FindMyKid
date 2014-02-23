@@ -22,7 +22,7 @@ import com.rickster.findmykid.model.Constants;
 
 public class MainActivity extends FragmentActivity implements ControlFragment.Callbacks{
 	
-	public static final String TAG = "HomeActivity";
+	public static final String TAG = "MainActivity";
 	
 	private FragmentManager fm;
 	private long locationId;
@@ -45,24 +45,23 @@ public class MainActivity extends FragmentActivity implements ControlFragment.Ca
 		if(mFirstTime){
 			Intent i = new Intent(MainActivity.this,  Init.class);
 			startActivity(i);
-		}
-		
-		
-		fm = getSupportFragmentManager();
-		mResearchButton = (ImageButton) findViewById(R.id.research_button);
-		mResearchButton.setOnClickListener(new View.OnClickListener() {
+		}else{
+			fm = getSupportFragmentManager();
+			mResearchButton = (ImageButton) findViewById(R.id.research_button);
+			mResearchButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					setUpControl();
+				}
+			});
 			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				setUpControl();
-			}
-		});
-		
-		mControlView = findViewById(R.id.control_frame);
-		locationId = -1;
-		setUpMap(locationId);
-		setUpControl();
+			mControlView = findViewById(R.id.control_frame);
+			locationId = -1;
+			setUpMap(locationId, false);
+			setUpControl();
+		}	
 	}
 	
 	@Override
@@ -83,9 +82,9 @@ public class MainActivity extends FragmentActivity implements ControlFragment.Ca
 		}
 	}
 	
-	private void setUpMap(long locationId){
+	private void setUpMap(long locationId, boolean text){
 		Fragment oldFragment = fm.findFragmentById(R.id.map_frame);
-		Fragment newFragment = MapFragment.newInstance(locationId);
+		Fragment newFragment = MapFragment.newInstance(locationId, text);
 		if(oldFragment != null) fm.beginTransaction().remove(oldFragment).commit();
 		fm.beginTransaction().add(R.id.map_frame, newFragment).commit();
 	}
@@ -107,11 +106,11 @@ public class MainActivity extends FragmentActivity implements ControlFragment.Ca
 	}
 
 	@Override
-	public void locationRetrieved(long id) {
+	public void locationRetrieved(long id, boolean text) {
 		// TODO Auto-generated method stub
 		removeControl();
 		Log.i(TAG, "" + id);
-		setUpMap(id);
+		setUpMap(id, text);
 	}
 	
 	

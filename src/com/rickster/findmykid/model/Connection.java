@@ -7,6 +7,10 @@ public class Connection {
 	private long mTracker;
 	private long mTracking;
 	
+	public Connection(){
+		mId = mTracker = mTracking = -1;
+	}
+	
 	public Connection(long id, long tracker, long tracking){
 		mId = id;
 		mTracker = tracker;

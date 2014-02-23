@@ -2,6 +2,7 @@ package com.rickster.findmykid.controller;
 
 import java.util.ArrayList;
 
+import com.rickster.findmykid.R;
 import com.rickster.findmykid.model.Connection;
 import com.rickster.findmykid.model.Constants;
 import com.rickster.findmykid.model.HttpData;
@@ -29,19 +30,14 @@ public class Lab {
 	private ArrayList<User> mTrackings;
 	private ArrayList<User> mTrackers;
 	private User mCurrentUser;
-	private boolean mOnline;
 	
 	public Lab(Context c){
 		mContext = c;
 		mPrefs = c.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
 		mCurrentUser = loadUser();
-		if(hasConnection(c)){
-			sOnlineLab = OnlineLab.get(c.getApplicationContext());
-			mOnline = true;
-		}else{
-			sOfflineLab = OfflineLab.get(c.getApplicationContext());
-			mOnline = false;
-		}
+
+		sOnlineLab = OnlineLab.get(c.getApplicationContext());
+		sOfflineLab = OfflineLab.get(c.getApplicationContext());		
 	}
 	
 	public static boolean hasConnection(Context c){
@@ -51,7 +47,7 @@ public class Lab {
 	}	
 	
 	public boolean alreadyConnected(User user){
-		if(mOnline) return sOnlineLab.alreadyConnected(user);
+		if(hasConnection(mContext)) return sOnlineLab.alreadyConnected(user);
 		else return sOfflineLab.alreadyConnected(user);
 	}
 	
@@ -64,64 +60,63 @@ public class Lab {
 	}
 	
 	public void sendFeedback(String message){
-		if(mOnline) sOnlineLab.sendFeedback(message);
+		if(hasConnection(mContext)) sOnlineLab.sendFeedback(message);
 		else sOfflineLab.sendFeedback(message);
 	}	
 	
 	public boolean deleteTracking(User user){
-		if(mOnline) return sOnlineLab.deleteTracking(user);
+		if(hasConnection(mContext)) return sOnlineLab.deleteTracking(user);
 		else return sOfflineLab.deleteTracking(user);		
 	}
 	
 	public boolean deleteTracker(User user){
-		if(mOnline) return sOnlineLab.deleteTracker(user);
+		if(hasConnection(mContext)) return sOnlineLab.deleteTracker(user);
 		else return sOfflineLab.deleteTracker(user);		
 	}	
 	
 	public ArrayList<User> loadTrackers(){			
-		if(mOnline) return sOnlineLab.loadTrackers();
+		if(hasConnection(mContext)) return sOnlineLab.loadTrackers();
 		else return sOfflineLab.loadTrackers();
 	}
 	
 	public ArrayList<User> loadTrackings(){	
-		Log.i(TAG, "Using: " + mOnline + " Lab");
-		if(mOnline) return sOnlineLab.loadTrackings();
+		Log.i(TAG, "Using: " + hasConnection(mContext) + " Lab");
+		if(hasConnection(mContext)) return sOnlineLab.loadTrackings();
 		else return sOfflineLab.loadTrackings();	
 	}
 	
 	public boolean hasPermission(User targetUser){
-		if(mOnline) return sOnlineLab.hasPermission(targetUser);
-		else return sOfflineLab.hasPermission(targetUser);		
+		if(hasConnection(mContext)) return sOnlineLab.hasPermission(targetUser);
+		else return sOfflineLab.hasPermissionToSend(targetUser);		
 	}
 	
 	public ArrayList<Connection> connectUser(String code){
-		if(mOnline) return sOnlineLab.connectUser(code);
+		if(hasConnection(mContext)) return sOnlineLab.connectUser(code);
 		else return sOfflineLab.connectUser(code);
 	}
 	
 	public User userExists(String code){
-		if(mOnline) return sOnlineLab.userExists(code);
+		if(hasConnection(mContext)) return sOnlineLab.userExists(code);
 		else return sOfflineLab.userExists(code);
 	}
 	
 	public void respondLocation(Location loc){
-		if(mOnline) sOnlineLab.respondLocation(loc);
-		else sOfflineLab.respondLocation(loc);		
+		if(hasConnection(mContext)) sOnlineLab.respondLocation(loc);	
 	}
 	
 	public void sendTrackingRequest(User targetUser){
-		if(mOnline) sOnlineLab.sendTrackingRequest(targetUser);
-		else sOfflineLab.sendTrackingRequest(targetUser);
+		if(hasConnection(mContext)) sOnlineLab.sendTrackingRequest(targetUser);
+		//else showToast(mContext.getString(R.string.connection_internet));
 	}
 	
 	public ArrayList<Location> getLocation(long id){
-		if(mOnline) return sOnlineLab.getLocation(id);
+		if(hasConnection(mContext)) return sOnlineLab.getLocation(id);
 		else return sOfflineLab.getLocation(id);
 	}
 	
 	public void registerUser(final User user){
-		Log.i(TAG, "Registering user: " + user.getName() + " Using " + mOnline + " Lab");
-		if(mOnline) sOnlineLab.registerUser(user);
+		Log.i(TAG, "Registering user: " + user.getName() + " Using " + hasConnection(mContext) + " Lab");
+		if(hasConnection(mContext)) sOnlineLab.registerUser(user);
 		else sOfflineLab.registerUser(user);			
 	}
 	
