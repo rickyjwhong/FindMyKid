@@ -68,9 +68,6 @@
         </receiver>
         <service  android:name=".controller.GCMService" />
         <service  android:name=".controller.SMSService" />
-        <activity android:name=".controller.GCMPushReceiver" />
-        <activity android:name=".view.MapActivity" />
-        <activity android:name=".view.HomeActivity" />
         <activity android:name=".view.FeedBackActivity" />
         <meta-data
             android:name="com.google.android.gms.version"
@@ -78,7 +75,7 @@
             />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBvVdBfkTjutGnx4PAFzZp1SGpoECqPr4g" />      
+            android:value="AIzaSyCWEbIupGZl1hnidq7diIeR4kPW_12OPbU" />      
     </application>
 
 </manifest>
